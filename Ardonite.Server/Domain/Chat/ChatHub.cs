@@ -4,8 +4,8 @@ namespace Ardonite.Server.Domain.Chat;
 
 public class ChatHub : Hub
 {
-    public async Task NewMessage(long username, string message)
+    public async Task Message(string message)
     {
-        await Clients.All.SendAsync("messageReceived", username, message);
+        await Clients.All.SendAsync("MessageReceived", message);
     }
 }
