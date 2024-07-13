@@ -1,3 +1,3 @@
 export function App() {
-	return <div>app</div>;
+	return <div className="bg-blue-500">App</div>;
 }
