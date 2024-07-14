@@ -1,3 +1,4 @@
+import { GameMachineContext } from "@/lib/game/machine";
 import { Link, createLazyFileRoute } from "@tanstack/react-router";
 
 export const Route = createLazyFileRoute("/")({
@@ -5,17 +6,15 @@ export const Route = createLazyFileRoute("/")({
 });
 
 function Page() {
-	return <StartMenu />;
-}
-
-function StartMenu() {
-	function handleClick() {
-		console.log("START");
-	}
+	const game = GameMachineContext.useActorRef();
 
 	return (
 		<main className="h-dvh grid place-items-center">
-			<Link to="/game" className="px-6 py-3 border" onClick={handleClick}>
+			<Link
+				to="/game"
+				className="px-6 py-3 border"
+				onClick={() => game.send({ type: "START" })}
+			>
 				COMMENCER
 			</Link>
 		</main>
