@@ -1,6 +1,6 @@
 import { createActorContext } from "@xstate/react";
 import { assign, setup } from "xstate";
-import { board } from "./board";
+import { boardGrid } from "./board";
 import { TICK_RATE } from "./constants";
 import type { Board, Position } from "./types";
 
@@ -46,7 +46,7 @@ export const gameMachine = setup({
 	context: {
 		clock: 0,
 		TICK_RATE,
-		board,
+		board: boardGrid,
 		player: {
 			position: {
 				x: 0,

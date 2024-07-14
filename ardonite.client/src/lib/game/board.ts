@@ -1,9 +1,9 @@
-import { cells } from "./cells";
-import type { Board } from "./types";
+import { BOARD_COLS, BOARD_ROWS } from "./constants";
 
-export const board: Board = {
-	width: 1000,
-	height: 700,
-	size: 10 * 10,
-	cells,
-};
+export const boardGrid = Array(BOARD_COLS)
+	.fill(undefined)
+	.flatMap((_, x) =>
+		Array(BOARD_ROWS)
+			.fill(undefined)
+			.map((_, y) => [x, y]),
+	);

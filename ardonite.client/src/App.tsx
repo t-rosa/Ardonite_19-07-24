@@ -1,66 +1,49 @@
-import { useActor } from "@xstate/react";
-import { act } from "react";
-import { GameMachineContext, gameMachine } from "./lib/game/machine";
-import type { Cell, Position } from "./lib/game/types";
+import { boardGrid } from "./lib/game/board";
+import {
+	BOARD_CELL_HEIGHT,
+	BOARD_CELL_WIDTH,
+	BOARD_COLS,
+	BOARD_ROWS,
+} from "./lib/game/constants";
+import type { Position } from "./lib/game/types";
 
 export function App() {
-	const board = GameMachineContext.useSelector((state) => state.context.board);
-
 	return (
 		<main className="h-dvh grid place-items-center">
-			<div className="grid grid-cols-[repeat(10,minmax(0,1fr))] p-3 border border-blue-500 relative">
-				<Player />
-				{board.cells.map((cell) => (
-					<>
-						<CellUI key={cell.id} cell={cell} />
-					</>
-				))}
-			</div>
+			<Board />
 		</main>
 	);
 }
 
-function Player() {
-	const gameActor = GameMachineContext.useActorRef();
-
-	const playerX = GameMachineContext.useSelector(
-		(state) => state.context.player.position.x,
-	);
-
-	const playerY = GameMachineContext.useSelector(
-		(state) => state.context.player.position.y,
-	);
-
+function Board() {
 	return (
-		<div
-			className="size-10 transition-transform bg-red-500 top-4 left-8 rounded-full absolute grid place-items-center duration-1000 "
+		<section
+			className="border relative"
 			style={{
-				transform: `translate(${playerX * 80}px, ${playerY * 48}px)`,
+				width: `${BOARD_COLS * BOARD_CELL_WIDTH}px`,
+				height: `${BOARD_ROWS * BOARD_CELL_HEIGHT}px`,
 			}}
 		>
-			P
-		</div>
+			{boardGrid.map(([x, y]) => (
+				<BoardCell key={`${x}${y}`} x={x} y={y} />
+			))}
+		</section>
 	);
 }
 
-function CellUI({ cell }: { cell: Cell }) {
-	const gameActor = GameMachineContext.useActorRef();
-
-	function handleClick(position: Position) {
-		gameActor.send({
-			type: "MOVE",
-			position,
-		});
-	}
-
+function BoardCell(props: Position) {
 	return (
-		<button
-			key={cell.id}
-			type="button"
-			className="w-20 h-12 border border-dashed hover:bg-blue-500/50"
-			onClick={() => handleClick(cell.position)}
+		<div
+			className="border grid place-items-center"
+			style={{
+				position: "absolute",
+				width: `${BOARD_CELL_WIDTH}px`,
+				height: `${BOARD_CELL_HEIGHT}px`,
+				top: `${props.y * BOARD_CELL_HEIGHT}px`,
+				left: `${props.x * BOARD_CELL_WIDTH}px`,
+			}}
 		>
-			{cell.position.x}:{cell.position.y}
-		</button>
+			{props.x}:{props.y}
+		</div>
 	);
 }
