@@ -4,7 +4,7 @@ import {
 	GRID_COLS,
 	GRID_ROWS,
 	PLAYER_HEIGHT,
-	PLAYER_MOVE_DELAY,
+	PLAYER_MOVE_SPEED,
 	PLAYER_WIDTH,
 } from "@/lib/constants";
 import { boardGrid } from "@/lib/game/board";
@@ -61,18 +61,7 @@ function GridCell(props: { x: number; y: number }) {
 	const state = useSelector(player, (state) => state);
 
 	function handleClick() {
-		const left = state.context.coordinates[0] > x;
-
-		if (
-			state.context.coordinates[0] !== x ||
-			state.context.coordinates[1] !== y
-		) {
-			if (left) {
-				player.send({ type: "MOVE_LEFT", coordinates: [x, y] });
-			} else {
-				player.send({ type: "MOVE_RIGHT", coordinates: [x, y] });
-			}
-		}
+		player.send({ type: "MOVE", coordinates: [x, y] });
 	}
 
 	return (
@@ -95,15 +84,16 @@ function PlayerCell() {
 	const player = PlayerMachineContext.useActorRef();
 	const [x, y] = useSelector(player, (state) => state.context.coordinates);
 	const state = useSelector(player, (state) => state);
+	const dx = useSelector(player, (state) => state.context.dx);
+	const dy = useSelector(player, (state) => state.context.dy);
 
 	return (
 		<img
-			alt=""
+			alt="player"
 			src={state.context.sprite}
 			style={{
-				transform: state.value === "MOVING_RIGHT" ? "scaleX(1)" : "scaleX(-1)",
 				position: "absolute",
-				transition: `left ${PLAYER_MOVE_DELAY}ms, top ${PLAYER_MOVE_DELAY}ms `,
+				transition: `left linear ${dx * PLAYER_MOVE_SPEED}ms , top linear ${dy * PLAYER_MOVE_SPEED}ms `,
 				width: `${PLAYER_WIDTH}px`,
 				height: `${PLAYER_HEIGHT}px`,
 				top: `${y * CELL_HEIGHT + CELL_HEIGHT / 2 - PLAYER_HEIGHT / 2}px`,

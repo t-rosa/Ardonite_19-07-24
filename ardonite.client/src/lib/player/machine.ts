@@ -1,6 +1,6 @@
 import { createActorContext } from "@xstate/react";
 import { assign, setup } from "xstate";
-import { PLAYER_INITIAL_COORDINATE, PLAYER_MOVE_DELAY } from "../constants";
+import { PLAYER_INITIAL_COORDINATE, PLAYER_MOVE_SPEED } from "../constants";
 import type { Coordinate } from "../types";
 
 export const playerMachine = setup({
@@ -8,24 +8,32 @@ export const playerMachine = setup({
 		context: {} as {
 			coordinates: Coordinate;
 			sprite: string;
+			dx: number;
+			dy: number;
 		},
 		events: {} as
 			| { type: "RESURRECT" }
 			| { type: "FIGHT" }
 			| { type: "WIN" }
 			| { type: "LOSE" }
-			| { type: "MOVE_UP"; coordinates: Coordinate }
-			| { type: "MOVE_DOWN"; coordinates: Coordinate }
-			| { type: "MOVE_RIGHT"; coordinates: Coordinate }
-			| { type: "MOVE_LEFT"; coordinates: Coordinate },
+			| { type: "MOVE"; coordinates: Coordinate }
+			| { type: "MOVE_X"; coordinates: Coordinate }
+			| { type: "MOVE_Y"; coordinates: Coordinate },
 	},
 	delays: {
-		moveDelay: PLAYER_MOVE_DELAY,
+		travelTime: ({ context, event }) => {
+			if (event.type === "MOVE") {
+				return context.dx * PLAYER_MOVE_SPEED;
+			}
+			return 0;
+		},
 	},
 }).createMachine({
 	context: {
 		sprite: "idle.gif",
 		coordinates: PLAYER_INITIAL_COORDINATE,
+		dx: 1,
+		dy: 1,
 	},
 	id: "PLAYER",
 	initial: "IDLE",
@@ -38,23 +46,14 @@ export const playerMachine = setup({
 				FIGHT: {
 					target: "FIGHTING",
 				},
-				MOVE_RIGHT: {
+				MOVE: {
 					actions: assign(({ event }) => {
 						return {
 							coordinates: event.coordinates,
 							sprite: "walk.gif",
 						};
 					}),
-					target: "MOVING_RIGHT",
-				},
-				MOVE_LEFT: {
-					actions: assign(({ event }) => {
-						return {
-							coordinates: event.coordinates,
-							sprite: "walk.gif",
-						};
-					}),
-					target: "MOVING_LEFT",
+					target: "MOVING",
 				},
 			},
 		},
@@ -68,17 +67,37 @@ export const playerMachine = setup({
 				},
 			},
 		},
-		MOVING_RIGHT: {
+		MOVING: {
 			after: {
-				moveDelay: {
+				travelTime: {
 					target: "IDLE",
+					actions: assign({
+						dx: 0,
+						dy: 0,
+					}),
 				},
 			},
-		},
-		MOVING_LEFT: {
-			after: {
-				moveDelay: {
-					target: "IDLE",
+			entry: ({ self, context }) => {
+				if (context.dx !== 0) {
+					self.send({ type: "MOVE_X", coordinates: context.coordinates });
+				}
+				self.send({ type: "MOVE_Y", coordinates: context.coordinates });
+			},
+			on: {
+				MOVE_X: {
+					actions: assign(({ context, event }) => {
+						return {
+							dx: Math.abs(context.coordinates[0] - event.coordinates[0]),
+						};
+					}),
+					target: "MOVING",
+				},
+				MOVE_Y: {
+					actions: assign(({ context, event }) => {
+						return {
+							dy: Math.abs(context.coordinates[1] - event.coordinates[1]),
+						};
+					}),
 				},
 			},
 		},
