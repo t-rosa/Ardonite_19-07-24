@@ -1,16 +1,17 @@
 import { CELL_HEIGHT, CELL_WIDTH, PLAYER_MOVE_SPEED } from "@/lib/constants";
 import { PlayerMachineContext } from "@/lib/player/machine";
-import { useSelector } from "@xstate/react";
 
 export function BoardCell(props: { x: number; y: number }) {
 	const { x, y } = props;
 
 	const actor = PlayerMachineContext.useActorRef();
-	const player = useSelector(actor, (state) => state.context);
+	const [playerX, playerY] = PlayerMachineContext.useSelector(
+		(state) => state.context.coordinates,
+	);
 
 	async function moveX() {
 		return new Promise((resolve) => {
-			const dx = Math.abs(player.coordinates[0] - x);
+			const dx = Math.abs(playerX - x);
 
 			actor.send({
 				type: "MOVE_X",
@@ -38,7 +39,7 @@ export function BoardCell(props: { x: number; y: number }) {
 		<button
 			type="button"
 			className="border grid place-items-center hover:bg-blue-500/20"
-			disabled={x === player.coordinates[0] && y === player.coordinates[1]}
+			disabled={x === playerX && y === playerY}
 			style={{
 				position: "absolute",
 				width: `${CELL_WIDTH}px`,
