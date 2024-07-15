@@ -16,24 +16,19 @@ export const playerMachine = setup({
 			| { type: "FIGHT" }
 			| { type: "WIN" }
 			| { type: "LOSE" }
-			| { type: "MOVE"; coordinates: Coordinate }
-			| { type: "MOVE_X"; coordinates: Coordinate }
-			| { type: "MOVE_Y"; coordinates: Coordinate },
+			| { type: "MOVE"; coordinates: Coordinate },
 	},
 	delays: {
-		travelTime: ({ context, event }) => {
-			if (event.type === "MOVE") {
-				return context.dx * PLAYER_MOVE_SPEED;
-			}
-			return 0;
+		travelTime: ({ context }) => {
+			return (context.dx + context.dy) * PLAYER_MOVE_SPEED;
 		},
 	},
 }).createMachine({
 	context: {
 		sprite: "idle.gif",
 		coordinates: PLAYER_INITIAL_COORDINATE,
-		dx: 1,
-		dy: 1,
+		dx: 0,
+		dy: 0,
 	},
 	id: "PLAYER",
 	initial: "IDLE",
@@ -47,9 +42,11 @@ export const playerMachine = setup({
 					target: "FIGHTING",
 				},
 				MOVE: {
-					actions: assign(({ event }) => {
+					actions: assign(({ context, event }) => {
 						return {
 							coordinates: event.coordinates,
+							dx: Math.abs(context.coordinates[0] - event.coordinates[0]),
+							dy: Math.abs(context.coordinates[1] - event.coordinates[1]),
 							sprite: "walk.gif",
 						};
 					}),
@@ -74,29 +71,6 @@ export const playerMachine = setup({
 					actions: assign({
 						dx: 0,
 						dy: 0,
-					}),
-				},
-			},
-			entry: ({ self, context }) => {
-				if (context.dx !== 0) {
-					self.send({ type: "MOVE_X", coordinates: context.coordinates });
-				}
-				self.send({ type: "MOVE_Y", coordinates: context.coordinates });
-			},
-			on: {
-				MOVE_X: {
-					actions: assign(({ context, event }) => {
-						return {
-							dx: Math.abs(context.coordinates[0] - event.coordinates[0]),
-						};
-					}),
-					target: "MOVING",
-				},
-				MOVE_Y: {
-					actions: assign(({ context, event }) => {
-						return {
-							dy: Math.abs(context.coordinates[1] - event.coordinates[1]),
-						};
 					}),
 				},
 			},

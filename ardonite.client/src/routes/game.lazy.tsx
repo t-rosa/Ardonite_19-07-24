@@ -58,10 +58,35 @@ function GridCell(props: { x: number; y: number }) {
 	const { x, y } = props;
 
 	const player = PlayerMachineContext.useActorRef();
-	const state = useSelector(player, (state) => state);
+	const playerCoordinates = useSelector(
+		player,
+		(state) => state.context.coordinates,
+	);
+
+	async function moveX() {
+		return new Promise((resolve) => {
+			const dx = Math.abs(playerCoordinates[0] - x);
+
+			player.send({
+				type: "MOVE",
+				coordinates: [x, playerCoordinates[1]],
+			});
+
+			setTimeout(() => {
+				resolve(true);
+			}, dx * PLAYER_MOVE_SPEED);
+		});
+	}
+
+	function moveY() {
+		player.send({
+			type: "MOVE",
+			coordinates: [x, y],
+		});
+	}
 
 	function handleClick() {
-		player.send({ type: "MOVE", coordinates: [x, y] });
+		moveX().then(moveY);
 	}
 
 	return (

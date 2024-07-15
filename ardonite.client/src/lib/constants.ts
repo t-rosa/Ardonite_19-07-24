@@ -11,4 +11,4 @@ export const GRID_HEIGHT = CELL_HEIGHT * GRID_COLS;
 export const PLAYER_INITIAL_COORDINATE: Coordinate = [0, 0];
 export const PLAYER_WIDTH = 28;
 export const PLAYER_HEIGHT = 32;
-export const PLAYER_MOVE_SPEED = 300;
+export const PLAYER_MOVE_SPEED = 200;
