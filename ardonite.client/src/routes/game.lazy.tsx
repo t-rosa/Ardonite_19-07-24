@@ -68,8 +68,8 @@ function GridCell(props: { x: number; y: number }) {
 			const dx = Math.abs(playerCoordinates[0] - x);
 
 			player.send({
-				type: "MOVE",
-				coordinates: [x, playerCoordinates[1]],
+				type: "MOVE_X",
+				x,
 			});
 
 			setTimeout(() => {
@@ -80,8 +80,8 @@ function GridCell(props: { x: number; y: number }) {
 
 	function moveY() {
 		player.send({
-			type: "MOVE",
-			coordinates: [x, y],
+			type: "MOVE_Y",
+			y,
 		});
 	}
 
@@ -111,6 +111,7 @@ function PlayerCell() {
 	const state = useSelector(player, (state) => state);
 	const dx = useSelector(player, (state) => state.context.dx);
 	const dy = useSelector(player, (state) => state.context.dy);
+	const facing = useSelector(player, (state) => state.context.facing);
 
 	return (
 		<img
@@ -118,6 +119,7 @@ function PlayerCell() {
 			src={state.context.sprite}
 			style={{
 				position: "absolute",
+				transform: facing === "left" ? "scaleX(-1)" : "scaleX(1)",
 				transition: `left linear ${dx * PLAYER_MOVE_SPEED}ms , top linear ${dy * PLAYER_MOVE_SPEED}ms `,
 				width: `${PLAYER_WIDTH}px`,
 				height: `${PLAYER_HEIGHT}px`,
