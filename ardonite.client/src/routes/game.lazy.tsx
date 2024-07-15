@@ -93,6 +93,7 @@ function GridCell(props: { x: number; y: number }) {
 		<button
 			type="button"
 			className="border grid place-items-center hover:bg-blue-500/20 "
+			disabled={x === playerCoordinates[0] && y === playerCoordinates[1]}
 			style={{
 				position: "absolute",
 				width: `${CELL_WIDTH}px`,
@@ -117,6 +118,7 @@ function PlayerCell() {
 		<img
 			alt="player"
 			src={state.context.sprite}
+			className="z-10"
 			style={{
 				position: "absolute",
 				transform: facing === "left" ? "scaleX(-1)" : "scaleX(1)",
