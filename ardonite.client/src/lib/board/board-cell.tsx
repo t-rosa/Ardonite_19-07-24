@@ -14,7 +14,7 @@ export function BoardCell(props: { x: number; y: number }) {
 			const dx = Math.abs(playerX - x);
 
 			actor.send({
-				type: "MOVE_X",
+				type: "player.move.x",
 				x,
 			});
 
@@ -26,7 +26,7 @@ export function BoardCell(props: { x: number; y: number }) {
 
 	function moveY() {
 		actor.send({
-			type: "MOVE_Y",
+			type: "player.move.y",
 			y,
 		});
 	}

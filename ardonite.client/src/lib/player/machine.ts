@@ -13,12 +13,12 @@ export const playerMachine = setup({
 			facing: "left" | "right";
 		},
 		events: {} as
-			| { type: "RESURRECT" }
-			| { type: "FIGHT" }
-			| { type: "WIN" }
-			| { type: "LOSE" }
-			| { type: "MOVE_X"; x: number }
-			| { type: "MOVE_Y"; y: number },
+			| { type: "player.move.x"; x: number }
+			| { type: "player.move.y"; y: number }
+			| { type: "player.resurrect" }
+			| { type: "player.fight" }
+			| { type: "player.win" }
+			| { type: "player.lose" },
 	},
 	delays: {
 		travelTime: ({ context }) => {
@@ -41,10 +41,10 @@ export const playerMachine = setup({
 				sprite: "idle.gif",
 			}),
 			on: {
-				FIGHT: {
+				"player.fight": {
 					target: "FIGHTING",
 				},
-				MOVE_X: {
+				"player.move.x": {
 					actions: assign(({ context, event }) => {
 						return {
 							coordinates: [event.x, context.coordinates[1]],
@@ -55,7 +55,7 @@ export const playerMachine = setup({
 					}),
 					target: "MOVING_X",
 				},
-				MOVE_Y: {
+				"player.move.y": {
 					actions: assign(({ context, event }) => {
 						return {
 							coordinates: [context.coordinates[0], event.y],
@@ -69,11 +69,11 @@ export const playerMachine = setup({
 		},
 		FIGHTING: {
 			on: {
-				LOSE: {
-					target: "DEAD",
-				},
-				WIN: {
+				"player.win": {
 					target: "IDLE",
+				},
+				"player.lose": {
+					target: "DEAD",
 				},
 			},
 		},
@@ -99,7 +99,7 @@ export const playerMachine = setup({
 		},
 		DEAD: {
 			on: {
-				RESURRECT: {
+				"player.resurrect": {
 					target: "IDLE",
 				},
 			},
