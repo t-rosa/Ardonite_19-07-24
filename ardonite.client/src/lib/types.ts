@@ -1,4 +1,4 @@
-export type Coordinate = [x: number, y: number];
+export type Coordinate = number[];
 
 export type Position = {
 	x: number;

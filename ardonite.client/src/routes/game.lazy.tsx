@@ -15,7 +15,7 @@ function Page() {
 		<main className="h-dvh">
 			<div className="grid place-items-center p-9">
 				<div className="px-6 py-3 border border-dashed">
-					{currentState.toString()}
+					{JSON.stringify(currentState)}
 				</div>
 			</div>
 			<div className="grid place-items-center">

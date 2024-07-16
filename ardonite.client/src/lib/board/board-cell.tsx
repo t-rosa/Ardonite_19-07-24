@@ -1,4 +1,4 @@
-import { CELL_HEIGHT, CELL_WIDTH, PLAYER_MOVE_SPEED } from "@/lib/constants";
+import { CELL_HEIGHT, CELL_WIDTH } from "@/lib/constants";
 import { PlayerMachineContext } from "@/lib/player/machine";
 
 export function BoardCell(props: { x: number; y: number }) {
@@ -9,30 +9,11 @@ export function BoardCell(props: { x: number; y: number }) {
 		(state) => state.context.coordinates,
 	);
 
-	async function moveX() {
-		return new Promise((resolve) => {
-			const dx = Math.abs(playerX - x);
-
-			actor.send({
-				type: "player.move.x",
-				x,
-			});
-
-			setTimeout(() => {
-				resolve(true);
-			}, dx * PLAYER_MOVE_SPEED);
-		});
-	}
-
-	function moveY() {
-		actor.send({
-			type: "player.move.y",
-			y,
-		});
-	}
-
 	function handleClick() {
-		moveX().then(moveY);
+		actor.send({
+			type: "player.move",
+			destination: [x, y],
+		});
 	}
 
 	return (

@@ -18,7 +18,7 @@ export function PlayerCell() {
 			style={{
 				position: "absolute",
 				transform: ctx.facing === "left" ? "scaleX(-1)" : "scaleX(1)",
-				transition: `left linear ${ctx.dx * PLAYER_MOVE_SPEED}ms , top linear ${ctx.dy * PLAYER_MOVE_SPEED}ms `,
+				transition: `left linear ${ctx.xDelta * PLAYER_MOVE_SPEED}ms , top linear ${ctx.yDelta * PLAYER_MOVE_SPEED}ms `,
 				width: `${PLAYER_WIDTH}px`,
 				height: `${PLAYER_HEIGHT}px`,
 				top: `${ctx.coordinates[1] * CELL_HEIGHT + CELL_HEIGHT / 2 - PLAYER_HEIGHT / 2}px`,

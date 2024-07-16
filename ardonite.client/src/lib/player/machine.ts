@@ -7,31 +7,47 @@ export const playerMachine = setup({
 	types: {
 		context: {} as {
 			coordinates: Coordinate;
+			destination: Coordinate;
+			xDelta: number;
+			yDelta: number;
 			sprite: string;
-			dx: number;
-			dy: number;
 			facing: "left" | "right";
 		},
 		events: {} as
-			| { type: "player.move.x"; x: number }
-			| { type: "player.move.y"; y: number }
+			| { type: "player.move"; destination: number[] }
 			| { type: "player.resurrect" }
 			| { type: "player.fight" }
 			| { type: "player.win" }
 			| { type: "player.lose" },
 	},
+	actions: {
+		moveX: assign(({ context }) => {
+			return {
+				coordinates: [context.destination[0], context.coordinates[1]],
+			};
+		}),
+		moveY: assign(({ context }) => {
+			return {
+				coordinates: [context.coordinates[0], context.destination[1]],
+			};
+		}),
+	},
 	delays: {
-		travelTime: ({ context }) => {
-			return (context.dx + context.dy) * PLAYER_MOVE_SPEED;
+		xTravelTime: ({ context }) => {
+			return context.xDelta * PLAYER_MOVE_SPEED;
+		},
+		yTravelTime: ({ context }) => {
+			return context.yDelta * PLAYER_MOVE_SPEED;
 		},
 	},
 }).createMachine({
 	context: {
+		coordinates: PLAYER_INITIAL_COORDINATE,
+		destination: [0, 0],
+		xDelta: 0,
+		yDelta: 0,
 		sprite: "idle.gif",
 		facing: "right",
-		coordinates: PLAYER_INITIAL_COORDINATE,
-		dx: 0,
-		dy: 0,
 	},
 	id: "PLAYER",
 	initial: "IDLE",
@@ -39,31 +55,52 @@ export const playerMachine = setup({
 		IDLE: {
 			entry: assign({
 				sprite: "idle.gif",
+				destination: [0, 0],
 			}),
 			on: {
+				"player.move": {
+					actions: assign(({ context, event }) => {
+						return {
+							destination: event.destination,
+							xDelta: Math.abs(context.coordinates[0] - event.destination[0]),
+							yDelta: Math.abs(context.coordinates[1] - event.destination[1]),
+						};
+					}),
+					target: "MOVING",
+				},
 				"player.fight": {
 					target: "FIGHTING",
 				},
-				"player.move.x": {
-					actions: assign(({ context, event }) => {
-						return {
-							coordinates: [event.x, context.coordinates[1]],
-							dx: Math.abs(context.coordinates[0] - event.x),
-							sprite: "walk.gif",
-							facing: context.coordinates[0] > event.x ? "left" : "right",
-						};
+			},
+		},
+		MOVING: {
+			initial: "MOVING_X",
+			states: {
+				MOVING_X: {
+					entry: {
+						type: "moveX",
+					},
+					exit: assign({
+						xDelta: 0,
 					}),
-					target: "MOVING_X",
+					after: {
+						xTravelTime: {
+							target: "MOVING_Y",
+						},
+					},
 				},
-				"player.move.y": {
-					actions: assign(({ context, event }) => {
-						return {
-							coordinates: [context.coordinates[0], event.y],
-							dy: Math.abs(context.coordinates[1] - event.y),
-							sprite: "walk.gif",
-						};
+				MOVING_Y: {
+					entry: {
+						type: "moveY",
+					},
+					exit: assign({
+						yDelta: 0,
 					}),
-					target: "MOVING_Y",
+					after: {
+						yTravelTime: {
+							target: "#PLAYER.IDLE",
+						},
+					},
 				},
 			},
 		},
@@ -74,26 +111,6 @@ export const playerMachine = setup({
 				},
 				"player.lose": {
 					target: "DEAD",
-				},
-			},
-		},
-		MOVING_X: {
-			after: {
-				travelTime: {
-					target: "IDLE",
-					actions: assign({
-						dx: 0,
-					}),
-				},
-			},
-		},
-		MOVING_Y: {
-			after: {
-				travelTime: {
-					target: "IDLE",
-					actions: assign({
-						dy: 0,
-					}),
 				},
 			},
 		},
