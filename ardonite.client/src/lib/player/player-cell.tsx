@@ -6,6 +6,7 @@ import {
 	PLAYER_WIDTH,
 } from "@/lib/constants";
 import { PlayerMachineContext } from "@/lib/player/machine";
+import { css } from "styled-system/css";
 
 export function PlayerCell() {
 	const ctx = PlayerMachineContext.useSelector((state) => state.context);
@@ -14,7 +15,9 @@ export function PlayerCell() {
 		<img
 			alt="player"
 			src={ctx.sprite}
-			className="z-10"
+			className={css({
+				zIndex: "10",
+			})}
 			style={{
 				position: "absolute",
 				transform: ctx.facing === "left" ? "scaleX(-1)" : "scaleX(1)",

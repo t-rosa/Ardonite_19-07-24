@@ -1,4 +1,5 @@
 import { Link, createLazyFileRoute } from "@tanstack/react-router";
+import { css } from "styled-system/css";
 
 export const Route = createLazyFileRoute("/")({
 	component: Page,
@@ -6,10 +7,13 @@ export const Route = createLazyFileRoute("/")({
 
 function Page() {
 	return (
-		<main className="h-dvh grid place-items-center">
-			<Link to="/game" className="px-6 py-3 border">
-				COMMENCER
-			</Link>
+		<main
+			className={css({
+				display: "grid",
+				placeItems: "center",
+			})}
+		>
+			<Link to="/game">COMMENCER</Link>
 		</main>
 	);
 }

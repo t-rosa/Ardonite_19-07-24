@@ -1,5 +1,6 @@
 import { CELL_HEIGHT, CELL_WIDTH } from "@/lib/constants";
 import { PlayerMachineContext } from "@/lib/player/machine";
+import { css } from "styled-system/css";
 
 export function BoardCell(props: { x: number; y: number }) {
 	const { x, y } = props;
@@ -19,7 +20,10 @@ export function BoardCell(props: { x: number; y: number }) {
 	return (
 		<button
 			type="button"
-			className="border grid place-items-center hover:bg-blue-500/20"
+			className={css({
+				borderWidth: "1",
+				cursor: "pointer",
+			})}
 			disabled={x === playerX && y === playerY}
 			style={{
 				position: "absolute",

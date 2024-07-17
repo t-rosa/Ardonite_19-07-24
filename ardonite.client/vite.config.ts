@@ -4,8 +4,9 @@ import path from "node:path";
 import { env } from "node:process";
 import { URL, fileURLToPath } from "node:url";
 import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
-import plugin from "@vitejs/plugin-react";
+import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 const baseFolder =
 	env.APPDATA !== undefined && env.APPDATA !== ""
@@ -45,7 +46,7 @@ const target = env.ASPNETCORE_HTTPS_PORT
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [TanStackRouterVite(), plugin()],
+	plugins: [tsconfigPaths({ root: "./" }), TanStackRouterVite(), react()],
 	resolve: {
 		alias: {
 			"@": fileURLToPath(new URL("./src", import.meta.url)),

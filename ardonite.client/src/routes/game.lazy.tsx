@@ -2,6 +2,8 @@ import { Board } from "@/lib/board/board";
 import { PlayerMachineContext } from "@/lib/player/machine";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { useSelector } from "@xstate/react";
+import { css } from "styled-system/css";
+import { Grid } from "styled-system/jsx";
 
 export const Route = createLazyFileRoute("/game")({
 	component: Page,
@@ -12,15 +14,22 @@ function Page() {
 	const currentState = useSelector(player, (state) => state.value);
 
 	return (
-		<main className="h-dvh">
-			<div className="grid place-items-center p-9">
-				<div className="px-6 py-3 border border-dashed">
+		<main>
+			<Grid placeItems="center" p="9">
+				<div
+					className={css({
+						border: "dashed",
+						borderWidth: "1",
+						px: "6",
+						py: "3",
+					})}
+				>
 					{JSON.stringify(currentState)}
 				</div>
-			</div>
-			<div className="grid place-items-center">
+			</Grid>
+			<Grid placeItems="center">
 				<Board />
-			</div>
+			</Grid>
 		</main>
 	);
 }
