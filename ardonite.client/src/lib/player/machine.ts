@@ -3,22 +3,35 @@ import { assign, setup } from "xstate";
 import { PLAYER_INITIAL_COORDINATE, PLAYER_MOVE_SPEED } from "../constants";
 import type { Coordinate } from "../types";
 
+type PlayerMachineContext = {
+	coordinates: Coordinate;
+	destination: Coordinate;
+	xDelta: number;
+	yDelta: number;
+	sprite: string;
+	facing: "left" | "right";
+};
+
+type PlayerMachineEvents =
+	| { type: "player.move"; destination: number[] }
+	| { type: "player.resurrect" }
+	| { type: "player.fight" }
+	| { type: "player.win" }
+	| { type: "player.lose" };
+
+const initialContext: PlayerMachineContext = {
+	coordinates: PLAYER_INITIAL_COORDINATE,
+	destination: [0, 0],
+	xDelta: 0,
+	yDelta: 0,
+	sprite: "idle.gif",
+	facing: "right",
+};
+
 export const playerMachine = setup({
 	types: {
-		context: {} as {
-			coordinates: Coordinate;
-			destination: Coordinate;
-			xDelta: number;
-			yDelta: number;
-			sprite: string;
-			facing: "left" | "right";
-		},
-		events: {} as
-			| { type: "player.move"; destination: number[] }
-			| { type: "player.resurrect" }
-			| { type: "player.fight" }
-			| { type: "player.win" }
-			| { type: "player.lose" },
+		context: {} as PlayerMachineContext,
+		events: {} as PlayerMachineEvents,
 	},
 	actions: {
 		moveX: assign(({ context }) => {
@@ -41,14 +54,7 @@ export const playerMachine = setup({
 		},
 	},
 }).createMachine({
-	context: {
-		coordinates: PLAYER_INITIAL_COORDINATE,
-		destination: [0, 0],
-		xDelta: 0,
-		yDelta: 0,
-		sprite: "idle.gif",
-		facing: "right",
-	},
+	context: initialContext,
 	id: "PLAYER",
 	initial: "IDLE",
 	states: {

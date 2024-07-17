@@ -1,5 +1,6 @@
 import { CELL_HEIGHT, CELL_WIDTH } from "@/lib/constants";
 import { PlayerMachineContext } from "@/lib/player/machine";
+import { Effect } from "effect";
 import { css } from "styled-system/css";
 
 export function BoardCell(props: { x: number; y: number }) {
@@ -10,12 +11,12 @@ export function BoardCell(props: { x: number; y: number }) {
 		(state) => state.context.coordinates,
 	);
 
-	function handleClick() {
+	const handleClick = Effect.sync(() => {
 		actor.send({
 			type: "player.move",
 			destination: [x, y],
 		});
-	}
+	});
 
 	return (
 		<button
@@ -32,7 +33,7 @@ export function BoardCell(props: { x: number; y: number }) {
 				top: `${y * CELL_HEIGHT}px`,
 				left: `${x * CELL_WIDTH}px`,
 			}}
-			onClick={handleClick}
+			onClick={() => Effect.runSync(handleClick)}
 		/>
 	);
 }
