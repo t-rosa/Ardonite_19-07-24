@@ -10,26 +10,31 @@ export const Route = createLazyFileRoute("/game")({
 });
 
 function Page() {
-	const player = PlayerMachineContext.useActorRef();
-	const currentState = useSelector(player, (state) => state.value);
-
 	return (
 		<main>
-			<Grid placeItems="center" p="9">
-				<div
-					className={css({
-						border: "dashed",
-						borderWidth: "1",
-						px: "6",
-						py: "3",
-					})}
-				>
-					{JSON.stringify(currentState)}
-				</div>
-			</Grid>
+			<PlayerState />
 			<Grid placeItems="center">
 				<Board />
 			</Grid>
 		</main>
+	);
+}
+
+function PlayerState() {
+	const currentState = PlayerMachineContext.useSelector((state) => state.value);
+
+	return (
+		<Grid placeItems="center" p="9">
+			<div
+				className={css({
+					border: "dashed",
+					borderWidth: "1",
+					px: "6",
+					py: "3",
+				})}
+			>
+				{JSON.stringify(currentState)}
+			</div>
+		</Grid>
 	);
 }
