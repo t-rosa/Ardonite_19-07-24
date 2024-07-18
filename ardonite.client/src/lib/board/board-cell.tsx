@@ -1,4 +1,3 @@
-import { CELL_HEIGHT, CELL_WIDTH } from "@/lib/constants";
 import { PlayerMachineContext } from "@/lib/player/machine";
 import { Effect } from "effect";
 import { css } from "styled-system/css";
@@ -21,19 +20,21 @@ export function BoardCell(props: { x: number; y: number }) {
 	return (
 		<button
 			type="button"
+			disabled={x === playerX && y === playerY}
+			onClick={() => Effect.runSync(handleClick)}
 			className={css({
 				borderWidth: "1",
 				cursor: "pointer",
-			})}
-			disabled={x === playerX && y === playerY}
-			style={{
+				w: "var(--CELL_WIDTH)",
+				h: "var(--CELL_HEIGHT)",
 				position: "absolute",
-				width: `${CELL_WIDTH}px`,
-				height: `${CELL_HEIGHT}px`,
-				top: `${y * CELL_HEIGHT}px`,
-				left: `${x * CELL_WIDTH}px`,
+				top: `calc(${y} * var(--CELL_HEIGHT))`,
+				left: `calc(${x} * var(--CELL_WIDTH))`,
+			})}
+			style={{
+				top: `calc(${y} * var(--CELL_HEIGHT))`,
+				left: `calc(${x} * var(--CELL_WIDTH))`,
 			}}
-			onClick={() => Effect.runSync(handleClick)}
 		/>
 	);
 }

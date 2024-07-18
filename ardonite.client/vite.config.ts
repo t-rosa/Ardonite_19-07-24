@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { env } from "node:process";
 import { URL, fileURLToPath } from "node:url";
+import MillionCompiler from "@million/lint";
 import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
@@ -46,7 +47,12 @@ const target = env.ASPNETCORE_HTTPS_PORT
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [tsconfigPaths({ root: "./" }), TanStackRouterVite(), react()],
+	plugins: [
+		MillionCompiler.vite(),
+		TanStackRouterVite(),
+		tsconfigPaths({ root: "./" }),
+		react(),
+	],
 	resolve: {
 		alias: {
 			"@": fileURLToPath(new URL("./src", import.meta.url)),

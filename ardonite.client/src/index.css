@@ -1,1 +1,20 @@
 @layer reset, base, tokens, recipes, utilities;
+
+:root {
+    --CELL_HEIGHT: 64px;
+    --CELL_WIDTH: 96px;
+
+    --GRID_ROWS: 9;
+    --GRID_COLS: 9;
+
+    --GRID_WIDTH: calc(var(--CELL_WIDTH) * var(--GRID_ROWS));
+    --GRID_HEIGHT: calc(var(--CELL_HEIGHT) * var(--GRID_COLS));
+
+    --PLAYER_WIDTH: 28px;
+    --PLAYER_HEIGHT: 32px;
+
+    --PLAYER_MOVE_SPEED: 200ms;
+
+    --DELTA_X:0;
+    --DELTA_Y:0
+}
