@@ -59,10 +59,6 @@ export const playerMachine = setup({
 	initial: "IDLE",
 	states: {
 		IDLE: {
-			entry: assign({
-				sprite: "idle.gif",
-				destination: [0, 0],
-			}),
 			on: {
 				"player.move": {
 					actions: assign(({ context, event }) => {
@@ -90,9 +86,6 @@ export const playerMachine = setup({
 					entry: {
 						type: "moveX",
 					},
-					exit: assign({
-						xDelta: 0,
-					}),
 					after: {
 						xTravelTime: {
 							target: "MOVING_Y",
@@ -103,9 +96,6 @@ export const playerMachine = setup({
 					entry: {
 						type: "moveY",
 					},
-					exit: assign({
-						yDelta: 0,
-					}),
 					after: {
 						yTravelTime: {
 							target: "#PLAYER.IDLE",

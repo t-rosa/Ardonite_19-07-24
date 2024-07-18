@@ -1,10 +1,10 @@
 import { PlayerMachineContext } from "../machine";
 
-export function usePlayerContext() {
-	const deltaX = PlayerMachineContext.useSelector(
+export function usePlayer() {
+	const xDelta = PlayerMachineContext.useSelector(
 		(state) => state.context.xDelta,
 	);
-	const deltaY = PlayerMachineContext.useSelector(
+	const yDelta = PlayerMachineContext.useSelector(
 		(state) => state.context.yDelta,
 	);
 	const sprite = PlayerMachineContext.useSelector(
@@ -20,5 +20,9 @@ export function usePlayerContext() {
 		(state) => state.context.coordinates[1],
 	);
 
-	return { deltaX, deltaY, sprite, facing, x, y };
+	const isMoving = PlayerMachineContext.useSelector((state) =>
+		state.matches("MOVING"),
+	);
+
+	return { xDelta, yDelta, sprite, facing, x, y, isMoving };
 }

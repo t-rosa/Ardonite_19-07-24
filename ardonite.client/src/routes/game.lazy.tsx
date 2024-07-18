@@ -1,7 +1,6 @@
 import { Board } from "@/lib/board/board";
 import { PlayerMachineContext } from "@/lib/player/machine";
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { useSelector } from "@xstate/react";
 import { css } from "styled-system/css";
 import { Grid } from "styled-system/jsx";
 

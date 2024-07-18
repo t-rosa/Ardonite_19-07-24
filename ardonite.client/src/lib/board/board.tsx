@@ -1,5 +1,4 @@
 import { PlayerCell } from "@/lib/player/player-cell";
-import * as React from "react";
 import { css } from "styled-system/css";
 import { BoardCell } from "./board-cell";
 import { grid } from "./grid";
@@ -16,9 +15,7 @@ export function Board() {
 		>
 			<PlayerCell />
 			{grid.map(([x, y]) => (
-				<React.Fragment key={`${x}${y}`}>
-					<BoardCell key={`${x}${y}`} x={x} y={y} />
-				</React.Fragment>
+				<BoardCell key={`${x}${y}`} x={x} y={y} />
 			))}
 		</section>
 	);
