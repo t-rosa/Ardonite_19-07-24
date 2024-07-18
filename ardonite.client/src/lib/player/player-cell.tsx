@@ -1,15 +1,15 @@
 import { css } from "styled-system/css";
-import { usePlayer } from "./hooks/use-player-context";
+import { PlayerMachineContext } from "./machine";
 
 export function PlayerCell() {
-	const { sprite, facing, xDelta, yDelta, x, y } = usePlayer();
+	const ctx = PlayerMachineContext.useSelector((state) => state.context);
 
 	return (
 		<div>
 			<img
 				alt="player"
-				src={sprite}
-				data-facing={facing}
+				src={ctx.sprite}
+				data-facing={ctx.facing}
 				className={css({
 					position: "absolute",
 					zIndex: "10",
@@ -23,9 +23,9 @@ export function PlayerCell() {
 					},
 				})}
 				style={{
-					transition: `left linear calc(${xDelta} * var(--PLAYER_MOVE_SPEED)), top linear calc(${yDelta} * var(--PLAYER_MOVE_SPEED))`,
-					top: `calc(${y} * var(--CELL_HEIGHT) + var(--CELL_HEIGHT) / 2 - var(--PLAYER_HEIGHT) / 2)`,
-					left: `calc(${x} * var(--CELL_WIDTH) + var(--CELL_WIDTH) / 2 - var(--PLAYER_WIDTH) / 2)`,
+					transition: `left linear calc(${ctx.xDelta} * var(--PLAYER_MOVE_SPEED)), top linear calc(${ctx.yDelta} * var(--PLAYER_MOVE_SPEED))`,
+					top: `calc(${ctx.coordinates[1]} * var(--CELL_HEIGHT) + var(--CELL_HEIGHT) / 2 - var(--PLAYER_HEIGHT) / 2)`,
+					left: `calc(${ctx.coordinates[0]} * var(--CELL_WIDTH) + var(--CELL_WIDTH) / 2 - var(--PLAYER_WIDTH) / 2)`,
 				}}
 			/>
 		</div>
