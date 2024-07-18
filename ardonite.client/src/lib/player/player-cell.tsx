@@ -2,13 +2,13 @@ import { css } from "styled-system/css";
 import { usePlayer } from "./hooks/use-player-context";
 
 export function PlayerCell() {
-	const { isMoving, facing, xDelta, yDelta, x, y } = usePlayer();
+	const { sprite, facing, xDelta, yDelta, x, y } = usePlayer();
 
 	return (
 		<div>
 			<img
 				alt="player"
-				src={isMoving ? "walk.gif" : "idle.gif"}
+				src={sprite}
 				data-facing={facing}
 				className={css({
 					position: "absolute",

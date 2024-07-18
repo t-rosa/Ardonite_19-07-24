@@ -20,9 +20,5 @@ export function usePlayer() {
 		(state) => state.context.coordinates[1],
 	);
 
-	const isMoving = PlayerMachineContext.useSelector((state) =>
-		state.matches("MOVING"),
-	);
-
-	return { xDelta, yDelta, sprite, facing, x, y, isMoving };
+	return { xDelta, yDelta, sprite, facing, x, y };
 }

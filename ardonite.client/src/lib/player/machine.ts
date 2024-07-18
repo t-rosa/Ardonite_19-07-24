@@ -37,6 +37,7 @@ export const playerMachine = setup({
 		moveX: assign(({ context }) => {
 			return {
 				coordinates: [context.destination[0], context.coordinates[1]],
+				sprite: "walk.gif",
 			};
 		}),
 		moveY: assign(({ context }) => {
@@ -99,6 +100,9 @@ export const playerMachine = setup({
 					after: {
 						yTravelTime: {
 							target: "#PLAYER.IDLE",
+							actions: assign({
+								sprite: "idle.gif",
+							}),
 						},
 					},
 				},
