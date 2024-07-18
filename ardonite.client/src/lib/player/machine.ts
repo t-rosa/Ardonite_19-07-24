@@ -70,6 +70,10 @@ export const playerMachine = setup({
 							destination: event.destination,
 							xDelta: Math.abs(context.coordinates[0] - event.destination[0]),
 							yDelta: Math.abs(context.coordinates[1] - event.destination[1]),
+							facing:
+								context.coordinates[0] < event.destination[0]
+									? "right"
+									: "left",
 						};
 					}),
 					target: "MOVING",
