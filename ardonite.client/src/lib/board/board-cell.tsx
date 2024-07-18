@@ -1,5 +1,4 @@
 import { PlayerMachineContext } from "@/lib/player/machine";
-import { Effect } from "effect";
 import { css } from "styled-system/css";
 
 export function BoardCell(props: { x: number; y: number }) {
@@ -10,18 +9,18 @@ export function BoardCell(props: { x: number; y: number }) {
 		(state) => state.context.coordinates,
 	);
 
-	const handleClick = Effect.sync(() => {
+	function handleClick() {
 		actor.send({
 			type: "player.move",
 			destination: [x, y],
 		});
-	});
+	}
 
 	return (
 		<button
 			type="button"
 			disabled={x === playerX && y === playerY}
-			onClick={() => Effect.runSync(handleClick)}
+			onClick={handleClick}
 			className={css({
 				borderWidth: "1",
 				cursor: "pointer",

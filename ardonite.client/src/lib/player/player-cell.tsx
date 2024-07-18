@@ -2,9 +2,7 @@ import { PlayerMachineContext } from "@/lib/player/machine";
 import { css } from "styled-system/css";
 
 export function PlayerCell() {
-	const actor = PlayerMachineContext.useActorRef();
 	const ctx = PlayerMachineContext.useSelector((state) => state.context);
-	const state = PlayerMachineContext.useSelector((state) => state);
 
 	return (
 		<div>
@@ -12,8 +10,6 @@ export function PlayerCell() {
 				alt="player"
 				src={ctx.sprite}
 				data-facing={ctx.facing}
-				data-x={ctx.coordinates[0]}
-				data-y={ctx.coordinates[1]}
 				className={css({
 					position: "absolute",
 					zIndex: "10",
