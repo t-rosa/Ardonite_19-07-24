@@ -14,9 +14,9 @@ export function Board() {
 				h: "var(--GRID_HEIGHT)",
 			})}
 		>
+			<PlayerCell />
 			{grid.map(([x, y]) => (
 				<React.Fragment key={`${x}${y}`}>
-					<PlayerCell />
 					<BoardCell key={`${x}${y}`} x={x} y={y} />
 				</React.Fragment>
 			))}
