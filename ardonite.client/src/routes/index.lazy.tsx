@@ -11,9 +11,11 @@ function Page() {
 			className={css({
 				display: "grid",
 				placeItems: "center",
+				h: "full",
 			})}
 		>
 			<Link to="/game">COMMENCER</Link>
+			<Link to="/canvas">COMMENCER CANVAS</Link>
 		</main>
 	);
 }

@@ -17,6 +17,7 @@ import { Route as rootRoute } from './routes/__root'
 // Create Virtual Routes
 
 const GameLazyImport = createFileRoute('/game')()
+const CanvasLazyImport = createFileRoute('/canvas')()
 const IndexLazyImport = createFileRoute('/')()
 
 // Create/Update Routes
@@ -25,6 +26,11 @@ const GameLazyRoute = GameLazyImport.update({
   path: '/game',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/game.lazy').then((d) => d.Route))
+
+const CanvasLazyRoute = CanvasLazyImport.update({
+  path: '/canvas',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/canvas.lazy').then((d) => d.Route))
 
 const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
@@ -42,6 +48,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/canvas': {
+      id: '/canvas'
+      path: '/canvas'
+      fullPath: '/canvas'
+      preLoaderRoute: typeof CanvasLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/game': {
       id: '/game'
       path: '/game'
@@ -56,6 +69,7 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   IndexLazyRoute,
+  CanvasLazyRoute,
   GameLazyRoute,
 })
 
@@ -68,11 +82,15 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/canvas",
         "/game"
       ]
     },
     "/": {
       "filePath": "index.lazy.tsx"
+    },
+    "/canvas": {
+      "filePath": "canvas.lazy.tsx"
     },
     "/game": {
       "filePath": "game.lazy.tsx"
