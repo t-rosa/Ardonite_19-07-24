@@ -18,7 +18,8 @@ export function BoardCell(props: { x: number; y: number }) {
 			type="button"
 			onClick={handleClick}
 			className={css({
-				borderWidth: "1",
+				borderWidth: "thin",
+				borderStyle: "dashed",
 				cursor: "pointer",
 				w: "var(--CELL_WIDTH)",
 				h: "var(--CELL_HEIGHT)",
