@@ -1,19 +1,18 @@
 import { createActorContext } from "@xstate/react";
 import { assign, setup } from "xstate";
-import { PLAYER_INITIAL_COORDINATE, PLAYER_MOVE_SPEED } from "../constants";
+import { PLAYER_INITIAL_COORDINATE } from "../constants";
 import type { Coordinate } from "../types";
 
 type PlayerMachineContext = {
 	coordinates: Coordinate;
-	destination: Coordinate;
-	xDelta: number;
-	yDelta: number;
+	dx: number;
+	dy: number;
 	sprite: string;
-	facing: "left" | "right";
+	facingRight: boolean;
 };
 
 type PlayerMachineEvents =
-	| { type: "player.move"; destination: number[] }
+	| { type: "player.move"; destination: Coordinate }
 	| { type: "player.resurrect" }
 	| { type: "player.fight" }
 	| { type: "player.win" }
@@ -21,11 +20,10 @@ type PlayerMachineEvents =
 
 const initialContext: PlayerMachineContext = {
 	coordinates: PLAYER_INITIAL_COORDINATE,
-	destination: [0, 0],
-	xDelta: 0,
-	yDelta: 0,
-	sprite: "idle.gif",
-	facing: "right",
+	dx: 0,
+	dy: 0,
+	sprite: "player/idle.gif",
+	facingRight: true,
 };
 
 export const playerMachine = setup({
@@ -34,25 +32,15 @@ export const playerMachine = setup({
 		events: {} as PlayerMachineEvents,
 	},
 	actions: {
-		moveX: assign(({ context }) => {
+		move: assign(({ context }, params: { destination: Coordinate }) => {
 			return {
-				coordinates: [context.destination[0], context.coordinates[1]],
-				sprite: "walk.gif",
+				coordinates: params.destination,
+				dx: Math.abs(context.coordinates[0] - params.destination[0]),
+				dy: Math.abs(context.coordinates[1] - params.destination[1]),
+				sprite: "player/walk.gif",
+				facingRight: context.coordinates[0] < params.destination[0],
 			};
 		}),
-		moveY: assign(({ context }) => {
-			return {
-				coordinates: [context.coordinates[0], context.destination[1]],
-			};
-		}),
-	},
-	delays: {
-		xTravelTime: ({ context }) => {
-			return context.xDelta * PLAYER_MOVE_SPEED;
-		},
-		yTravelTime: ({ context }) => {
-			return context.yDelta * PLAYER_MOVE_SPEED;
-		},
 	},
 }).createMachine({
 	context: initialContext,
@@ -62,49 +50,13 @@ export const playerMachine = setup({
 		IDLE: {
 			on: {
 				"player.move": {
-					actions: assign(({ context, event }) => {
-						return {
-							destination: event.destination,
-							xDelta: Math.abs(context.coordinates[0] - event.destination[0]),
-							yDelta: Math.abs(context.coordinates[1] - event.destination[1]),
-							facing:
-								context.coordinates[0] < event.destination[0]
-									? "right"
-									: "left",
-						};
-					}),
-					target: "MOVING",
+					actions: {
+						type: "move",
+						params: ({ event }) => ({ destination: event.destination }),
+					},
 				},
 				"player.fight": {
 					target: "FIGHTING",
-				},
-			},
-		},
-		MOVING: {
-			initial: "MOVING_X",
-			states: {
-				MOVING_X: {
-					entry: {
-						type: "moveX",
-					},
-					after: {
-						xTravelTime: {
-							target: "MOVING_Y",
-						},
-					},
-				},
-				MOVING_Y: {
-					entry: {
-						type: "moveY",
-					},
-					after: {
-						yTravelTime: {
-							target: "#PLAYER.IDLE",
-							actions: assign({
-								sprite: "idle.gif",
-							}),
-						},
-					},
 				},
 			},
 		},

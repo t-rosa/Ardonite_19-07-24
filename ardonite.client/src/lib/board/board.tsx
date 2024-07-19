@@ -1,5 +1,6 @@
 import { PlayerCell } from "@/lib/player/player-cell";
 import { css } from "styled-system/css";
+import { MonsterCell } from "../monster/monster-cell";
 import { BoardCell } from "./board-cell";
 import { grid } from "./grid";
 
@@ -15,6 +16,7 @@ export function Board() {
 			})}
 		>
 			<PlayerCell />
+			<MonsterCell />
 			{grid.map(([x, y]) => (
 				<BoardCell key={`${x}${y}`} x={x} y={y} />
 			))}
