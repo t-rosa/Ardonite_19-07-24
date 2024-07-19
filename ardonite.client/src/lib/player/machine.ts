@@ -1,10 +1,11 @@
 import { createActorContext } from "@xstate/react";
 import { assign, setup } from "xstate";
-import { PLAYER_INITIAL_COORDINATE } from "../constants";
+import { PLAYER_INITIAL_COORDINATE, PLAYER_MOVE_SPEED } from "../constants";
 import type { Coordinate } from "../types";
 
 type PlayerMachineContext = {
 	coordinates: Coordinate;
+	worldCoordinates: Coordinate;
 	dx: number;
 	dy: number;
 	sprite: string;
@@ -20,6 +21,7 @@ type PlayerMachineEvents =
 
 const initialContext: PlayerMachineContext = {
 	coordinates: PLAYER_INITIAL_COORDINATE,
+	worldCoordinates: PLAYER_INITIAL_COORDINATE,
 	dx: 0,
 	dy: 0,
 	sprite: "player/idle.gif",
@@ -42,28 +44,71 @@ export const playerMachine = setup({
 			};
 		}),
 	},
+	delays: {
+		travelTime: ({ context }) => {
+			if (context.dx === 0) {
+				return context.dy * PLAYER_MOVE_SPEED;
+			}
+
+			if (context.dy === 0) {
+				return context.dx * PLAYER_MOVE_SPEED;
+			}
+
+			if (context.dx === context.dy) {
+				return context.dx * PLAYER_MOVE_SPEED;
+			}
+
+			return Math.max(context.dy, context.dy) * PLAYER_MOVE_SPEED;
+		},
+	},
 }).createMachine({
 	context: initialContext,
 	id: "PLAYER",
 	initial: "IDLE",
 	states: {
 		IDLE: {
+			entry: assign({
+				sprite: "player/idle.gif",
+			}),
 			on: {
 				"player.move": {
 					actions: {
 						type: "move",
 						params: ({ event }) => ({ destination: event.destination }),
 					},
+					target: "MOVING",
 				},
 				"player.fight": {
 					target: "FIGHTING",
 				},
 			},
 		},
+		MOVING: {
+			after: {
+				travelTime: {
+					target: "IDLE",
+				},
+			},
+		},
 		FIGHTING: {
+			entry: assign(({ context }) => {
+				return {
+					worldCoordinates: context.coordinates,
+					coordinates: [0, 0],
+					dx: 0,
+					dy: 0,
+				};
+			}),
 			on: {
 				"player.win": {
 					target: "IDLE",
+					actions: assign(({ context }) => {
+						return {
+							coordinates: context.worldCoordinates,
+							dx: 0,
+							dy: 0,
+						};
+					}),
 				},
 				"player.lose": {
 					target: "DEAD",

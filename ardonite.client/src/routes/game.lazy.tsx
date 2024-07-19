@@ -1,5 +1,5 @@
 import { Board } from "@/lib/board/board";
-import { PlayerMachineContext } from "@/lib/player/machine";
+import { PlayerMachineContext, playerMachine } from "@/lib/player/machine";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { css } from "styled-system/css";
 import { Grid } from "styled-system/jsx";
@@ -27,10 +27,14 @@ function Page() {
 }
 
 function PlayerState() {
+	const actor = PlayerMachineContext.useActorRef();
 	const currentState = PlayerMachineContext.useSelector((state) => state.value);
 
 	return (
 		<Grid placeItems="center" p="9">
+			<button type="button" onClick={() => actor.send({ type: "player.win" })}>
+				win
+			</button>
 			<div
 				className={css({
 					border: "dashed",
