@@ -46,19 +46,19 @@ export const playerMachine = setup({
 	},
 	delays: {
 		travelTime: ({ context }) => {
-			if (context.dx === 0) {
-				return context.dy * PLAYER_MOVE_SPEED;
-			}
-
-			if (context.dy === 0) {
-				return context.dx * PLAYER_MOVE_SPEED;
-			}
-
 			if (context.dx === context.dy) {
 				return context.dx * PLAYER_MOVE_SPEED;
 			}
 
-			return Math.max(context.dy, context.dy) * PLAYER_MOVE_SPEED;
+			if (context.dx === 0 && context.dy !== 0) {
+				return context.dy * PLAYER_MOVE_SPEED;
+			}
+
+			if (context.dy === 0 && context.dx !== 0) {
+				return context.dx * PLAYER_MOVE_SPEED;
+			}
+
+			return Math.max(context.dy, context.dx) * PLAYER_MOVE_SPEED;
 		},
 	},
 }).createMachine({
