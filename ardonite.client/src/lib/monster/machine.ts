@@ -9,7 +9,7 @@ type MonsterMachineContext = {
 };
 
 const initialContext: MonsterMachineContext = {
-	coordinates: [8, 8],
+	coordinates: [7, 7],
 	sprite: "monster/idle.gif",
 	facing: "left",
 };

@@ -9,8 +9,6 @@ export function Board() {
 		<section
 			className={css({
 				position: "relative",
-				borderWidth: "1",
-				borderStyle: "dashed",
 				w: "var(--GRID_WIDTH)",
 				h: "var(--GRID_HEIGHT)",
 			})}

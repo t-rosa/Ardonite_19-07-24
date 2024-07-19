@@ -13,7 +13,14 @@ function Page() {
 		<main>
 			<PlayerState />
 			<Grid placeItems="center">
-				<Board />
+				<div
+					className={css({
+						borderWidth: 1,
+						p: 3,
+					})}
+				>
+					<Board />
+				</div>
 			</Grid>
 		</main>
 	);

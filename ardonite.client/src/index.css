@@ -4,8 +4,8 @@
     --CELL_HEIGHT: 64px;
     --CELL_WIDTH: 96px;
 
-    --GRID_ROWS: 9;
-    --GRID_COLS: 9;
+    --GRID_ROWS: 8;
+    --GRID_COLS: 8;
 
     --GRID_WIDTH: calc(var(--CELL_WIDTH) * var(--GRID_ROWS));
     --GRID_HEIGHT: calc(var(--CELL_HEIGHT) * var(--GRID_COLS));
